@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Brief Place - Technical Inkwell</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Material Symbols -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-container": "#fefcff",
+              "inverse-primary": "#adc6ff",
+              "secondary": "#405e96",
+              "surface-tint": "#005bc1",
+              "on-error-container": "#93000a",
+              "inverse-on-surface": "#f1f1f1",
+              "on-secondary-container": "#2d4c83",
+              "on-tertiary": "#ffffff",
+              "on-tertiary-container": "#fffbff",
+              "primary-fixed-dim": "#adc6ff",
+              "on-secondary-fixed": "#001a41",
+              "tertiary-fixed-dim": "#ffb595",
+              "error": "#ba1a1a",
+              "surface-container-low": "#f3f3f3",
+              "surface-container-high": "#e8e8e8",
+              "surface-container": "#eeeeee",
+              "error-container": "#ffdad6",
+              "tertiary": "#9e3d00",
+              "secondary-container": "#a1befd",
+              "surface-dim": "#dadada",
+              "secondary-fixed": "#d8e2ff",
+              "primary-fixed": "#d8e2ff",
+              "on-background": "#1b1b1b",
+              "background": "#f9f9f9",
+              "surface": "#f9f9f9",
+              "secondary-fixed-dim": "#adc6ff",
+              "on-primary": "#ffffff",
+              "outline-variant": "#c1c6d7",
+              "tertiary-fixed": "#ffdbcc",
+              "inverse-surface": "#303030",
+              "on-tertiary-fixed-variant": "#7c2e00",
+              "surface-container-highest": "#e2e2e2",
+              "on-surface": "#1b1b1b",
+              "on-primary-fixed": "#001a41",
+              "surface-variant": "#e2e2e2",
+              "tertiary-container": "#c64f00",
+              "on-error": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              "outline": "#717786",
+              "on-primary-fixed-variant": "#004493",
+              "on-tertiary-fixed": "#351000",
+              "on-surface-variant": "#414755",
+              "surface-bright": "#f9f9f9",
+              "primary-container": "#0070eb",
+              "primary": "#0058bc",
+              "on-secondary-fixed-variant": "#26467d",
+            },
+            fontFamily: {
+              headline: ["Space Grotesk"],
+              body: ["Inter"],
+              label: ["Inter"],
+            },
+            borderRadius: { DEFAULT: "0px", lg: "0px", xl: "0px", full: "9999px" },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      }
+      .manga-texture {
+        background-image: radial-gradient(#1b1b1b 0.5px, transparent 0.5px);
+        background-size: 4px 4px;
+        opacity: 0.05;
+      }
+      .ink-focus:focus {
+        border-bottom-width: 3px;
+        border-color: #0058bc;
+        outline: none;
+      }
+      .typewriter-cursor::after {
+        content: "";
+        display: inline-block;
+        width: 12px;
+        height: 24px;
+        background-color: #0058bc;
+        margin-left: 4px;
+        vertical-align: middle;
+        animation: blink 1s step-end infinite;
+      }
+      @keyframes blink {
+        from,
+        to {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      .manga-portrait-mask {
+        mask-image: linear-gradient(to bottom, black 80%, transparent 100%),
+          linear-gradient(to right, black 80%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%),
+          linear-gradient(to right, black 80%, transparent 100%);
+      }
+    </style>
+    <!-- Markdown renderer (used by app.js style logic) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  </head>
+  <body class="bg-background font-body text-on-surface selection:bg-primary selection:text-white">
+    <!-- TopNavBar -->
+    <header
+      class="fixed top-0 w-full flex justify-between items-center px-6 h-16 bg-white dark:bg-[#1b1b1b] border-b-2 border-[#1b1b1b]/10 dark:border-white/10 z-50"
+    >
+      <div class="flex items-center gap-8">
+        <button
+          id="mobileMenuBtn"
+          class="md:hidden flex items-center justify-center w-10 h-10 rounded hover:bg-[#f9f9f9] dark:hover:bg-white/5 transition-colors"
+          type="button"
+          aria-label="Open menu"
+        >
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <span class="text-2xl font-black uppercase tracking-tighter text-[#1b1b1b] dark:text-white font-headline">Brief Place</span>
+        <nav class="hidden md:flex gap-6 h-full">
+          <a class="flex items-center text-[#0058bc] border-b-4 border-[#0058bc] pb-1 font-headline font-bold tracking-tight" href="#">Explore</a>
+          <a class="flex items-center text-[#1b1b1b] dark:text-white opacity-70 hover:bg-[#f9f9f9] dark:hover:bg-white/5 transition-colors font-headline font-bold tracking-tight" href="#">Mission</a>
+          <a class="flex items-center text-[#1b1b1b] dark:text-white opacity-70 hover:bg-[#f9f9f9] dark:hover:bg-white/5 transition-colors font-headline font-bold tracking-tight" href="#">Archive</a>
+        </nav>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="relative hidden sm:block">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+          <input id="topSearchInput" class="bg-surface-container-low border-b-2 border-outline-variant py-1.5 pl-10 pr-4 text-sm w-64 ink-focus transition-all" placeholder="what you want know about me" type="text" />
+        </div>
+      </div>
+    </header>
+
+    <!-- Mobile backdrop -->
+    <div
+      id="mobileBackdrop"
+      class="fixed inset-0 bg-black/30 hidden md:hidden z-30"
+    ></div>
+
+    <!-- SideNavBar -->
+    <aside
+      id="sideNav"
+      class="fixed left-0 top-16 h-[calc(100vh-64px)] flex flex-col p-4 w-64 bg-white/70 dark:bg-[#1b1b1b]/70 backdrop-blur-xl shadow-[64px_0_64px_-20px_rgba(27,27,27,0.04)] z-40 -translate-x-full md:translate-x-0 transition-transform"
+    >
+      <div class="mb-8 px-2 flex items-center gap-3">
+        <div class="w-12 h-12 bg-surface-container-high overflow-hidden">
+          <img
+            alt="Suyu illustration"
+            class="w-full h-full object-cover grayscale brightness-110"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXo6ISBN_maUj4qeZuvT8maRdAM847sl6IVWz5T8swUWTyDeMYcD69WHwjdQlCm0zQkiQ3gKZsWc1c8e5B0X04sRQZo8m81_T0r6h8-zEgRinUctUnn5gxJjeOlKcDr4jfU5rOvDCSCWTW8ZTwdB8h0CzSVAy_fM4Az1LC4C2-yARjG7XIcZyA_rvN6LEEfx1aVabyQc0GM1SsNwIhQFcxq-NjxI1PeUoZaEBNDF71twWsjsl5u_f759Fa0q3mb5PUAIcqsVO7FhQ"
+          />
+        </div>
+        <div>
+          <h2 class="text-xl font-black text-[#1b1b1b] dark:text-white font-headline leading-none">Suyu</h2>
+          <p class="font-['Space_Grotesk'] uppercase tracking-widest text-[11px] text-primary mt-1">Technical Inkwell</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2 flex-grow">
+        <a class="flex items-center gap-4 px-4 py-3 bg-[#0058bc] text-white font-bold hover:translate-x-1 transition-transform duration-200 group border-l-4 border-[#9e3d00]" href="#">
+          <span class="material-symbols-outlined">edit_note</span>
+          <span class="font-headline tracking-widest text-[11px] uppercase">Record</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-3 text-[#1b1b1b] dark:text-white hover:bg-[#f9f9f9] hover:translate-x-1 transition-transform duration-200" href="#">
+          <span class="material-symbols-outlined">terminal</span>
+          <span class="font-headline tracking-widest text-[11px] uppercase">Code</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-3 text-[#1b1b1b] dark:text-white hover:bg-[#f9f9f9] hover:translate-x-1 transition-transform duration-200" href="#">
+          <span class="material-symbols-outlined">history</span>
+          <span class="font-headline tracking-widest text-[11px] uppercase">History</span>
+        </a>
+        <button
+          id="newEntryBtn"
+          class="mt-6 mx-2 py-3 bg-on-surface text-surface font-headline font-bold uppercase tracking-widest text-[12px] flex items-center justify-center gap-2 hover:bg-primary transition-colors"
+          type="button"
+        >
+          <span class="material-symbols-outlined text-sm">add</span>
+          New Entry
+        </button>
+      </div>
+
+      <div class="mt-auto pt-4 border-t border-outline-variant/20">
+        <a class="flex items-center gap-4 px-4 py-3 text-[#1b1b1b] dark:text-white hover:bg-[#f9f9f9] hover:translate-x-1 transition-transform duration-200" href="#">
+          <span class="material-symbols-outlined">settings</span>
+          <span class="font-headline tracking-widest text-[11px] uppercase">Settings</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Canvas -->
+    <main class="ml-0 md:ml-64 mt-16 p-4 md:p-8 min-h-screen relative overflow-hidden flex flex-col items-center">
+      <!-- Background Textures -->
+      <div class="absolute inset-0 manga-texture pointer-events-none"></div>
+      <div class="relative z-10 w-full max-w-4xl pt-12">
+        <!-- Centered Header -->
+        <div class="mb-12 flex flex-col md:flex-row items-start md:items-end justify-between gap-8 border-l-8 border-primary pl-8 relative">
+          <div>
+            <span class="font-label text-[10px] tracking-[0.2em] text-primary uppercase font-bold mb-2 block">System Ready</span>
+            <h1 class="text-6xl md:text-8xl font-headline font-black text-on-surface leading-none tracking-tighter uppercase relative z-10">Brief Place</h1>
+          </div>
+          <div class="relative flex-shrink-0 w-full md:w-[280px] h-[240px] md:h-auto overflow-visible flex items-end">
+            <!-- Stylized Manga Portrait Integration -->
+            <div class="relative w-full h-full">
+              <div class="absolute bottom-0 right-0 w-[140%] h-[140%] translate-x-1/4 translate-y-1/4 pointer-events-none">
+                <img
+                  alt="Manga Character Portrait"
+                  class="w-full h-full object-contain grayscale contrast-[1.5] brightness-105"
+                  src="https://lh3.googleusercontent.com/aida/ADBb0ujcwC4Yg8f_UngYh_Rk-jbweyxJKUv-txsB6l2YfrgVLqDHlS8hu7sGVlVhwgpaNCv9F1G55mz4ot4saAR9l-Tl-f_lhkDaDJ0NvdKqtNzfT840VFnr_Tj9zx6G32q8NIcHgMIGq--0dhh2ii1zCNM7Y9Cs-5_2cjUSBdKn6WTlg7dXi_MjTyWTOw_0W3lYfB4aZPcSnu6csYIGVx8yPJxo_wRd9Epw7soJDD-jbm-yPc2Y19hpeB7dOkTHtAuE5En9_zpDdC6tWw"
+                  style="object-position: 50% 30%; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 85%); filter: grayscale(1) contrast(1.8) brightness(1.1)"
+                />
+              </div>
+              <!-- Technical Metadata Overlay -->
+              <div class="absolute bottom-0 right-0 bg-on-surface text-surface text-[8px] font-headline font-bold uppercase tracking-widest px-2 py-0.5 z-20">
+                VISUAL_CORE_02
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Typewriter Input Area -->
+        <div class="bg-surface-container-lowest p-10 border-2 border-on-surface shadow-[12px_12px_0_0_rgba(27,27,27,1)] relative">
+          <div class="absolute -top-3 left-6 bg-on-surface text-surface px-3 py-1 text-[10px] font-headline font-bold uppercase tracking-widest">
+            Input_Protocol
+          </div>
+          <textarea
+            id="editor"
+            autofocus
+            class="w-full bg-transparent border-none focus:ring-0 text-xl md:text-2xl font-body leading-relaxed text-on-surface placeholder:text-outline-variant resize-none min-h-[400px] typewriter-cursor"
+            placeholder="Start typing your transmission..."
+          ></textarea>
+          <div class="mt-4 flex items-center gap-3">
+            <label class="text-[10px] font-headline font-bold uppercase tracking-widest text-on-surface-variant">
+              Tags
+            </label>
+            <input
+              id="tags"
+              class="w-full bg-transparent border-b-2 border-outline-variant py-1 text-sm text-on-surface placeholder:text-outline-variant focus:outline-none"
+              placeholder="e.g. notes, tech, thoughts"
+              type="text"
+            />
+          </div>
+          <div class="mt-8 flex justify-between items-center pt-6 border-t border-outline-variant/20">
+            <div class="flex gap-4">
+              <button id="submitEntryBtn" class="bg-primary text-on-primary px-6 py-2 font-headline font-bold uppercase tracking-widest text-xs hover:bg-primary-container transition-all" type="button">
+                Submit Entry
+              </button>
+              <button id="saveDraftBtn" class="bg-transparent border-2 border-on-surface text-on-surface px-6 py-2 font-headline font-bold uppercase tracking-widest text-xs hover:bg-on-surface hover:text-white transition-all" type="button">
+                Save Draft
+              </button>
+            </div>
+            <span data-words class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest">Words: 0 / Auto-sync enabled</span>
+          </div>
+
+          <div class="mt-8">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-headline font-bold uppercase tracking-widest text-on-surface-variant">
+                Markdown Preview
+              </span>
+            </div>
+            <div
+              id="preview"
+              class="p-4 bg-surface-container-lowest border-2 border-outline-variant/60 rounded-xl text-on-surface overflow-y-auto max-h-56"
+            ></div>
+          </div>
+
+          <div
+            id="settingsPanel"
+            class="hidden mt-8 pt-6 border-t border-outline-variant/20"
+          >
+            <div class="flex items-center justify-between gap-4">
+              <div class="text-sm font-headline font-bold uppercase tracking-widest text-on-surface-variant">
+                Settings
+              </div>
+              <span id="themeLabel" class="text-[10px] text-on-surface-variant uppercase tracking-[0.2em]">Theme: Light</span>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-3">
+              <button
+                id="toggleThemeBtn"
+                class="bg-primary text-on-primary px-6 py-2 font-headline font-bold uppercase tracking-widest text-xs hover:bg-primary-container transition-all"
+                type="button"
+              >
+                Toggle Dark Mode
+              </button>
+              <button
+                id="clearAllBtn"
+                class="bg-transparent border-2 border-on-surface text-on-surface px-6 py-2 font-headline font-bold uppercase tracking-widest text-xs hover:bg-on-surface hover:text-white transition-all"
+                type="button"
+              >
+                Clear Local Data
+              </button>
+            </div>
+            <p class="mt-3 text-[11px] text-on-surface-variant opacity-80">
+              Stored locally in your browser (drafts and submitted notes).
+            </p>
+          </div>
+        </div>
+
+        <!-- Archive / Notes -->
+        <section id="archivePanel" class="mt-12 w-full">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <h2 id="archiveTitle" class="text-xl font-black uppercase tracking-tighter text-on-surface">Notes Archive</h2>
+            <div id="archiveCount" class="text-[10px] text-on-surface-variant font-label uppercase tracking-[0.2em]">0 notes</div>
+          </div>
+          <div id="notes" class="flex flex-col gap-4"></div>
+          <div id="emptyState" class="hidden p-6 bg-surface-container-lowest border-2 border-outline-variant/60 rounded-xl text-on-surface-variant text-sm">
+            No notes yet. Type something and click `Submit Entry`.
+          </div>
+        </section>
+
+        <!-- Footer Meta -->
+        <footer class="mt-24 py-8 border-t border-outline-variant flex flex-col md:flex-row justify-between items-center gap-6 w-full">
+          <div class="flex items-center gap-4">
+            <span class="text-2xl font-black uppercase tracking-tighter text-[#1b1b1b] font-headline">Brief Place</span>
+            <span class="text-[10px] text-on-surface-variant font-label uppercase tracking-widest bg-surface-container px-2 py-1">Ver 2.0.4 - technical inkwell</span>
+          </div>
+          <div class="flex gap-8">
+            <a class="text-[10px] text-on-surface-variant font-label uppercase tracking-[0.2em] hover:text-primary transition-colors" href="#">Protocol</a>
+            <a class="text-[10px] text-on-surface-variant font-label uppercase tracking-[0.2em] hover:text-primary transition-colors" href="#">Archive</a>
+            <a class="text-[10px] text-on-surface-variant font-label uppercase tracking-[0.2em] hover:text-primary transition-colors" href="#">Security</a>
+          </div>
+        </footer>
+      </div>
+    </main>
+
+    <!-- Contextual FAB -->
+    <button id="fabBtn" class="fixed bottom-8 right-8 w-16 h-16 bg-on-surface text-surface flex items-center justify-center hover:bg-primary transition-colors active:scale-95 shadow-xl z-50" type="button">
+      <span class="material-symbols-outlined text-3xl">edit</span>
+    </button>
+
+    <script>
+      /* ========================
+         全局状态
+      ========================= */
+      let currentTab = "record";
+      let currentLoadedNoteId = null; // 当前编辑器里加载的笔记 id（用于删除时联动清空）
+      const API_BASE = "/api";
+
+      /* ========================
+         DOM 获取
+      ========================= */
+      const textarea = document.getElementById("editor");
+      const preview = document.getElementById("preview");
+      const tagsInput = document.getElementById("tags");
+      const wordCounter = document.querySelector("[data-words]");
+      const submitBtn = document.getElementById("submitEntryBtn");
+      const saveBtn = document.getElementById("saveDraftBtn");
+      const newEntryBtn = document.getElementById("newEntryBtn");
+      const fabBtn = document.getElementById("fabBtn");
+      const navLinks = document.querySelectorAll("aside a");
+
+      const topSearchInput = document.getElementById("topSearchInput");
+
+      const archivePanel = document.getElementById("archivePanel");
+      const archiveTitle = document.getElementById("archiveTitle");
+      const archiveCount = document.getElementById("archiveCount");
+      const notesDiv = document.getElementById("notes");
+      const emptyState = document.getElementById("emptyState");
+
+      const settingsPanel = document.getElementById("settingsPanel");
+      const toggleThemeBtn = document.getElementById("toggleThemeBtn");
+      const clearAllBtn = document.getElementById("clearAllBtn");
+      const themeLabel = document.getElementById("themeLabel");
+
+      const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+      const sideNav = document.getElementById("sideNav");
+      const mobileBackdrop = document.getElementById("mobileBackdrop");
+      const isMobile = window.matchMedia("(max-width: 767px)");
+
+      function closeMobileNav() {
+        if (typeof window.__setMobileNavOpen === "function") {
+          window.__setMobileNavOpen(false);
+        }
+      }
+
+      init();
+
+      function init() {
+        initTheme();
+        loadDraft();
+        updateWordCount();
+        bindEvents();
+        initMobileNav();
+
+        // 默认高亮 Record
+        const recordLink = Array.from(navLinks).find(
+          (l) => l.textContent.trim().toLowerCase() === "record"
+        );
+        switchTab(currentTab, recordLink);
+        renderEntries();
+      }
+
+      function initMobileNav() {
+        if (!mobileMenuBtn || !sideNav || !mobileBackdrop) return;
+
+        // 初始状态：手机隐藏侧边栏，非手机显示
+        if (!isMobile.matches) {
+          sideNav.classList.remove("-translate-x-full");
+          sideNav.classList.add("translate-x-0");
+          mobileBackdrop.classList.add("hidden");
+          return;
+        }
+
+        sideNav.classList.add("-translate-x-full");
+        sideNav.classList.remove("translate-x-0");
+        mobileBackdrop.classList.add("hidden");
+
+        const setOpen = (open) => {
+          const shouldShow = isMobile.matches && open;
+          sideNav.classList.toggle("translate-x-0", shouldShow);
+          sideNav.classList.toggle("-translate-x-full", !shouldShow);
+          mobileBackdrop.classList.toggle("hidden", !shouldShow);
+        };
+
+        mobileMenuBtn.addEventListener("click", () => setOpen(true));
+        mobileBackdrop.addEventListener("click", () => setOpen(false));
+
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") setOpen(false);
+        });
+
+        // 监听窗口变化，避免状态错乱
+        isMobile.addEventListener("change", () => {
+          if (isMobile.matches) setOpen(false);
+          else setOpen(false);
+        });
+
+        // 暴露到闭包里：供其它点击事件调用
+        window.__setMobileNavOpen = setOpen;
+      }
+
+      /* ========================
+         事件绑定
+      ========================= */
+      function bindEvents() {
+        textarea.addEventListener("input", () => {
+          updateWordCount();
+          autoSave();
+        });
+
+        submitBtn.addEventListener("click", submitEntry);
+        saveBtn.addEventListener("click", saveDraft);
+
+        newEntryBtn.addEventListener("click", newEntry);
+        fabBtn.addEventListener("click", newEntry);
+
+        navLinks.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const tabText = link.textContent.trim().toLowerCase();
+            switchTab(tabText, link);
+            closeMobileNav();
+          });
+        });
+
+        newEntryBtn.addEventListener("click", closeMobileNav);
+        if (fabBtn) fabBtn.addEventListener("click", closeMobileNav);
+
+        // 顶部/底部导航：做基础跳转与滚动
+        const findNavLink = (name) =>
+          Array.from(navLinks).find(
+            (l) => l.textContent.trim().toLowerCase() === name
+          ) || null;
+
+        const headerNavLinks = document.querySelectorAll("header nav a");
+        headerNavLinks.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const t = link.textContent.trim().toLowerCase();
+            if (t === "explore") {
+              textarea.scrollIntoView({ behavior: "smooth", block: "center" });
+              closeMobileNav();
+              return;
+            }
+            if (t === "mission") {
+              const h1 = document.querySelector("main h1");
+              h1?.scrollIntoView({ behavior: "smooth", block: "center" });
+              closeMobileNav();
+              return;
+            }
+            if (t === "archive") {
+              switchTab("record", findNavLink("record"));
+              archivePanel?.scrollIntoView({ behavior: "smooth", block: "start" });
+              closeMobileNav();
+            }
+          });
+        });
+
+        const footerLinks = document.querySelectorAll("footer a");
+        footerLinks.forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const t = link.textContent.trim().toLowerCase();
+            if (t === "protocol") {
+              textarea.scrollIntoView({ behavior: "smooth", block: "center" });
+              closeMobileNav();
+              return;
+            }
+            if (t === "archive") {
+              switchTab("record", findNavLink("record"));
+              archivePanel?.scrollIntoView({ behavior: "smooth", block: "start" });
+              closeMobileNav();
+              return;
+            }
+            if (t === "security") {
+              switchTab("settings", findNavLink("settings"));
+              settingsPanel?.scrollIntoView({ behavior: "smooth", block: "start" });
+              closeMobileNav();
+            }
+          });
+        });
+
+        if (topSearchInput) {
+          topSearchInput.addEventListener("input", () => renderEntries());
+        }
+
+        if (toggleThemeBtn) {
+          toggleThemeBtn.addEventListener("click", () => {
+            document.documentElement.classList.toggle("dark");
+            applyTheme();
+            renderEntries();
+          });
+        }
+
+        if (clearAllBtn) {
+          clearAllBtn.addEventListener("click", async () => {
+            if (!confirm("确定清空草稿和所有已提交笔记吗？")) return;
+            localStorage.removeItem("draft");
+            textarea.value = "";
+            if (tagsInput) tagsInput.value = "";
+            currentLoadedNoteId = null;
+            await clearAllNotesFromServer();
+            updateWordCount();
+            renderPreview();
+            await renderEntries();
+          });
+        }
+      }
+
+      /* ========================
+         功能逻辑
+      ========================= */
+      function switchTab(tabText, clickedLink) {
+        currentTab = tabText;
+
+        navLinks.forEach((link) => {
+          link.classList.remove("bg-[#0058bc]", "text-white");
+        });
+        if (clickedLink) {
+          clickedLink.classList.add("bg-[#0058bc]", "text-white");
+        }
+
+        syncUIByTab();
+        renderEntries();
+
+        if (currentTab === "history") {
+          archivePanel?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+
+      function syncUIByTab() {
+        const isSettings = currentTab === "settings";
+        const isHistory = currentTab === "history";
+
+        settingsPanel?.classList.toggle("hidden", !isSettings);
+        archivePanel?.classList.toggle("hidden", isSettings);
+        preview?.classList.toggle("hidden", isSettings);
+        if (tagsInput) tagsInput.disabled = isSettings;
+
+        textarea.disabled = isSettings || isHistory;
+        submitBtn.disabled = isSettings || isHistory;
+        saveBtn.disabled = isSettings || isHistory;
+
+        if (isSettings) {
+          textarea.placeholder = "Settings panel (use buttons below)";
+        } else if (isHistory) {
+          textarea.placeholder = "History mode: click a card to load it";
+        } else if (currentTab === "code") {
+          textarea.placeholder = "Write your code...";
+        } else {
+          textarea.placeholder = "Start typing your transmission...";
+        }
+      }
+
+      function initTheme() {
+        const theme = localStorage.getItem("theme");
+        if (theme === "dark") document.documentElement.classList.add("dark");
+
+        if (themeLabel) {
+          themeLabel.innerText = `Theme: ${
+            document.documentElement.classList.contains("dark") ? "Dark" : "Light"
+          }`;
+        }
+      }
+
+      function applyTheme() {
+        const isDark = document.documentElement.classList.contains("dark");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+        if (themeLabel) {
+          themeLabel.innerText = `Theme: ${isDark ? "Dark" : "Light"}`;
+        }
+      }
+
+      // 字数统计
+      function updateWordCount() {
+        const text = textarea.value.trim();
+        const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+        if (wordCounter) {
+          wordCounter.innerText = `Words: ${words} / Auto-sync enabled`;
+        }
+      }
+
+      // Markdown 实时预览
+      function renderPreview() {
+        if (!preview) return;
+        const raw = textarea?.value || "";
+        if (window.marked) {
+          preview.innerHTML = window.marked.parse(raw);
+        } else {
+          // 兜底：marked 脚本没加载时至少不报错
+          preview.textContent = raw;
+        }
+      }
+
+      // 保存草稿
+      function saveDraft() {
+        localStorage.setItem("draft", textarea.value);
+        renderPreview();
+        alert("Draft saved");
+      }
+
+      // 自动保存
+      function autoSave() {
+        localStorage.setItem("draft", textarea.value);
+        renderPreview();
+      }
+
+      // 读取草稿
+      function loadDraft() {
+        const draft = localStorage.getItem("draft");
+        if (draft !== null && draft !== undefined) textarea.value = draft;
+        currentLoadedNoteId = null;
+        renderPreview();
+      }
+
+      // 提交内容
+      async function submitEntry() {
+        if (textarea.disabled) return;
+
+        const content = textarea.value.trim();
+        if (!content) {
+          alert("内容为空");
+          return;
+        }
+
+        const tags = (tagsInput?.value || "").trim();
+
+        try {
+          await createNoteOnServer({ content, tags });
+        } catch (error) {
+          alert(error?.message || "提交失败，请稍后重试");
+          return;
+        }
+
+        alert("提交成功 ✅");
+        textarea.value = "";
+        localStorage.setItem("draft", "");
+        if (tagsInput) tagsInput.value = "";
+        currentLoadedNoteId = null;
+        updateWordCount();
+        renderPreview();
+        await renderEntries();
+      }
+
+      // 新建
+      function newEntry() {
+        if (textarea.disabled) return;
+        if (confirm("清空当前内容？")) {
+          textarea.value = "";
+          localStorage.setItem("draft", "");
+          if (tagsInput) tagsInput.value = "";
+          currentLoadedNoteId = null;
+          updateWordCount();
+          renderPreview();
+          renderEntries();
+        }
+      }
+
+      async function renderEntries() {
+        if (currentTab === "settings") return;
+        if (!notesDiv || !archiveTitle || !archiveCount || !emptyState) return;
+
+        let notes = [];
+        try {
+          notes = await fetchNotesFromServer();
+        } catch (error) {
+          notesDiv.innerHTML = "";
+          emptyState.classList.remove("hidden");
+          emptyState.textContent = error?.message || "Failed to load notes.";
+          archiveTitle.innerText = "Notes Archive";
+          archiveCount.innerText = "0 notes";
+          return;
+        }
+
+        const normalizedQuery = (topSearchInput?.value || "").trim().toLowerCase();
+
+        const filtered = normalizedQuery
+          ? notes.filter((n) => {
+              const content = String(n?.content || "").toLowerCase();
+              const tags = String(n?.tags || "").toLowerCase();
+              return content.includes(normalizedQuery) || tags.includes(normalizedQuery);
+            })
+          : notes;
+
+        archiveTitle.innerText = "Notes Archive";
+        archiveCount.innerText = `${filtered.length} notes`;
+
+        notesDiv.innerHTML = "";
+
+        if (filtered.length === 0) {
+          emptyState.classList.remove("hidden");
+          emptyState.textContent = "No notes yet. Type something and click `Submit Entry`.";
+          return;
+        }
+        emptyState.classList.add("hidden");
+
+        filtered.forEach((n) => {
+          const noteId = n?.id;
+          const contentRaw = String(n?.content || "");
+          const time = escapeHtml(String(n?.time || ""));
+          const tagsEscaped = escapeHtml(String(n?.tags || ""));
+          const tagsText = tagsEscaped || "untagged";
+
+          const bodyHtml = window.marked
+            ? window.marked.parse(contentRaw)
+            : escapeHtml(contentRaw).replace(/\n/g, "<br/>");
+
+          const card = document.createElement("div");
+          card.className =
+            "p-4 bg-white dark:bg-slate-800 rounded-xl shadow hover:scale-105 transition cursor-pointer";
+          card.innerHTML = `
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <div class="text-xs opacity-60">${time}</div>
+              <button
+                type="button"
+                data-delete-note="${escapeHtml(String(noteId || ""))}"
+                class="text-[10px] px-2 py-1 rounded bg-transparent border border-outline-variant/40 text-on-surface hover:bg-on-surface hover:text-white transition"
+              >
+                Delete
+              </button>
+            </div>
+            <div class="text-sm mb-2">${bodyHtml}</div>
+            <div class="text-xs text-blue-500">${tagsText}</div>
+          `;
+
+          card.addEventListener("click", () => loadNote(n));
+          card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              loadNote(n);
+            }
+          });
+          card.tabIndex = 0;
+
+          notesDiv.appendChild(card);
+
+          const deleteBtn = card.querySelector("[data-delete-note]");
+          deleteBtn?.addEventListener("click", async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const id = deleteBtn.getAttribute("data-delete-note");
+            if (!id) return;
+            await deleteNoteById(id);
+          });
+        });
+      }
+
+      function loadNote(note) {
+        const content = String(note?.content || "");
+        const tags = String(note?.tags || "");
+
+        textarea.value = content;
+        if (tagsInput) tagsInput.value = tags;
+        currentLoadedNoteId = note?.id || null;
+
+        localStorage.setItem("draft", textarea.value);
+        updateWordCount();
+        renderPreview();
+
+        const recordLink = Array.from(navLinks).find(
+          (l) => l.textContent.trim().toLowerCase() === "record"
+        );
+        switchTab("record", recordLink || null);
+      }
+
+      function escapeHtml(str) {
+        return str.replace(/[&<>"']/g, (m) => {
+          switch (m) {
+            case "&":
+              return "&amp;";
+            case "<":
+              return "&lt;";
+            case ">":
+              return "&gt;";
+            case '"':
+              return "&quot;";
+            case "'":
+              return "&#39;";
+            default:
+              return m;
+          }
+        });
+      }
+
+      async function deleteNoteById(noteId) {
+        if (!noteId) return;
+        if (!confirm("删除这条留言吗？")) return;
+
+        try {
+          await deleteNoteOnServer(noteId);
+        } catch (error) {
+          alert(error?.message || "删除失败，请稍后重试");
+          return;
+        }
+
+        if (currentLoadedNoteId && String(currentLoadedNoteId) === String(noteId)) {
+          textarea.value = "";
+          if (tagsInput) tagsInput.value = "";
+          localStorage.setItem("draft", "");
+          currentLoadedNoteId = null;
+          updateWordCount();
+          renderPreview();
+        }
+
+        await renderEntries();
+      }
+
+      async function fetchNotesFromServer() {
+        const res = await fetch(`${API_BASE}/notes`);
+        if (!res.ok) {
+          throw new Error("无法加载服务器笔记");
+        }
+        const data = await res.json();
+        if (!Array.isArray(data)) return [];
+        return data;
+      }
+
+      async function createNoteOnServer(payload) {
+        const res = await fetch(`${API_BASE}/notes`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          throw new Error("提交失败");
+        }
+
+        return res.json();
+      }
+
+      async function deleteNoteOnServer(noteId) {
+        const res = await fetch(`${API_BASE}/notes/${encodeURIComponent(noteId)}`, {
+          method: "DELETE",
+        });
+
+        if (!res.ok) {
+          throw new Error("删除失败");
+        }
+      }
+
+      async function clearAllNotesFromServer() {
+        const res = await fetch(`${API_BASE}/notes`, {
+          method: "DELETE",
+        });
+
+        if (!res.ok) {
+          throw new Error("清空失败");
+        }
+      }
+    </script>
+  </body>
+</html>
