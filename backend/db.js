@@ -1,7 +1,30 @@
+const fs = require("fs");
 const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
 
-const DB_PATH = process.env.SQLITE_PATH || path.join(__dirname, "notes.db");
+function resolveDbPath() {
+  const preferredPath = process.env.SQLITE_PATH
+    ? path.resolve(process.env.SQLITE_PATH)
+    : path.join(__dirname, "notes.db");
+  const fallbackPath = path.join(__dirname, "notes.db");
+
+  const candidates = [...new Set([preferredPath, fallbackPath])];
+
+  for (const filePath of candidates) {
+    const dir = path.dirname(filePath);
+    try {
+      fs.mkdirSync(dir, { recursive: true });
+      fs.accessSync(dir, fs.constants.W_OK);
+      return filePath;
+    } catch (error) {
+      // try next candidate
+    }
+  }
+
+  return fallbackPath;
+}
+
+const DB_PATH = resolveDbPath();
 const db = new sqlite3.Database(DB_PATH);
 
 function run(sql, params = []) {
