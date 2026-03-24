@@ -355,7 +355,7 @@
       ========================= */
       let currentTab = "record";
       let currentLoadedNoteId = null; // 当前编辑器里加载的笔记 id（用于删除时联动清空）
-      const API_BASE = "https://render1-kszb.onrender.com/api";
+      const API_BASE = "/api";
 
       /* ========================
          DOM 获取
@@ -563,6 +563,18 @@
       ========================= */
       function switchTab(tabText, clickedLink) {
         currentTab = tabText;
+
+        if (currentTab === "settings") {
+          const enableDark = confirm("是否启用暗色模式？\n点击“确定”启用，点击“取消”保持浅色。");
+          document.documentElement.classList.toggle("dark", enableDark);
+          applyTheme();
+        }
+
+        if (currentTab === "settings") {
+          const enableDark = confirm("是否启用暗色模式？\n点击“确定”启用，点击“取消”保持浅色。");
+          document.documentElement.classList.toggle("dark", enableDark);
+          applyTheme();
+        }
 
         navLinks.forEach((link) => {
           link.classList.remove("bg-[#0058bc]", "text-white");
@@ -902,3 +914,4 @@
     </script>
   </body>
 </html>
+
