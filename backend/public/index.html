@@ -468,7 +468,8 @@
         navLinks.forEach((link) => {
           link.addEventListener("click", (e) => {
             e.preventDefault();
-            const tabText = link.textContent.trim().toLowerCase();
+            const labelEl = link.querySelector(".font-headline");
+            const tabText = (labelEl ? labelEl.textContent : link.textContent).trim().toLowerCase();
             switchTab(tabText, link);
             closeMobileNav();
           });
